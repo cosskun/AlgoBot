@@ -10,16 +10,23 @@ platform :ios do
       is_key_content_base64: false
     )
 
+    kc_name = "fastlane_keychain"
+    kc_pass = "fastlane_password"
+
     create_keychain(
-      name: "ci_keychain",
-      password: "ci_password",
+      name: kc_name,
+      password: kc_pass,
       default_keychain: true,
       unlock: true,
       timeout: 3600,
       lock_when_sleeps: false
     )
 
+    kc_file = File.expand_path("~/Library/Keychains/#{kc_name}-db")
+
     get_certificates(
+      keychain_path: kc_file,
+      keychain_password: kc_pass,
       development: false
     )
 
