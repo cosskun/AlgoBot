@@ -20,8 +20,6 @@ platform :ios do
     )
 
     get_certificates(
-      keychain_name: "ci_keychain",
-      keychain_password: "ci_password",
       development: false
     )
 
