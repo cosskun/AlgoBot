@@ -30,6 +30,11 @@ platform :ios do
       development: false
     )
 
+    create_app_identifier(
+      app_identifier: "com.algokids.algobotFlutter",
+      app_name: "AlgoKids"
+    )
+
     get_provisioning_profile(
       app_identifier: "com.algokids.algobotFlutter",
       development: false
