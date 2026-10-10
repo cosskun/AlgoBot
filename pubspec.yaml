@@ -1,4 +1,4 @@
-name: algobot_flutter
+﻿name: algobot_flutter
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -89,3 +89,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+
+dependency_overrides:
+  device_info_plus: 11.3.0
