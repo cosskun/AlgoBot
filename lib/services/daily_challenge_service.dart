@@ -82,8 +82,8 @@ class DailyChallengeService {
     await StorageService.instance.markDailyChallengeCompleted(todayKey);
   }
 
-  LevelData getDailyChallengeLevel() {
-    final now = DateTime.now();
+  LevelData getDailyChallengeLevel({DateTime? overrideDate}) {
+    final now = overrideDate ?? DateTime.now();
     final daySeed = now.year * 10000 + now.month * 100 + now.day;
     final random = Random(daySeed);
 
@@ -184,17 +184,17 @@ class DailyChallengeService {
         robotStart: const GridPoint(2, 4),
         robotDir: 0,
         goal: const GridPoint(2, 0),
-        stars: const [GridPoint(0, 2), GridPoint(4, 2), GridPoint(2, 0)],
-        obstacles: const [GridPoint(2, 3), GridPoint(2, 1), GridPoint(1, 2), GridPoint(3, 2)],
+        obstacles: const [GridPoint(0, 2), GridPoint(1, 2), GridPoint(3, 2), GridPoint(4, 2)],
         keys: const [GridPoint(0, 4)],
         doors: const [GridPoint(2, 2)],
+        stars: const [GridPoint(4, 4), GridPoint(0, 0), GridPoint(4, 0)],
         allowedBlocks: const [
           CommandType.forward,
           CommandType.turnRight,
           CommandType.turnLeft,
           CommandType.loopTimes,
         ],
-        maxBlocksFor3Stars: 12,
+        maxBlocksFor3Stars: 18,
       );
     }
   }

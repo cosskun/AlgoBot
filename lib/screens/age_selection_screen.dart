@@ -101,9 +101,12 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
                 children: [
                   const Text('🎁', style: TextStyle(fontSize: 26)),
                   const SizedBox(width: 8),
-                  Text(
-                    isEn ? 'Star Mystery Chests' : 'Yıldız Sandıkları',
-                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+                  Expanded(
+                    child: Text(
+                      isEn ? 'Star Mystery Chests' : 'Yıldız Sandıkları',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+                    ),
                   ),
                 ],
               ),
@@ -124,9 +127,12 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
                         children: [
                           const Text('⭐', style: TextStyle(fontSize: 20)),
                           const SizedBox(width: 6),
-                          Text(
-                            isEn ? 'Total Stars: $_totalStars' : 'Toplam Yıldız: $_totalStars',
-                            style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF92400E), fontSize: 15),
+                          Flexible(
+                            child: Text(
+                              isEn ? 'Total Stars: $_totalStars' : 'Toplam Yıldız: $_totalStars',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF92400E), fontSize: 15),
+                            ),
                           ),
                         ],
                       ),
@@ -479,12 +485,16 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
               children: [
                 Row(
                   children: [
-                    Text(
-                      LocaleService.instance.tr('dailyChallenge'),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: isDailyDone ? const Color(0xFF166534) : const Color(0xFF1E40AF),
+                    Expanded(
+                      child: Text(
+                        LocaleService.instance.tr('dailyChallenge'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: isDailyDone ? const Color(0xFF166534) : const Color(0xFF1E40AF),
+                        ),
                       ),
                     ),
                     if (isDailyDone) ...[
@@ -508,6 +518,8 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
                   isDailyDone
                       ? (isEn ? 'Completed today! New challenge tomorrow.' : 'Bugünkü tamamlandı! Yarın yenisi gelecek.')
                       : (isEn ? 'Solve today\'s puzzle & earn special stars!' : 'Günün özel bulmacasını çöz, yıldızları kap!'),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
                 ),
               ],
@@ -569,29 +581,32 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
           const Spacer(),
 
           // TR / EN Dil Butonu
-          InkWell(
-            onTap: () {
-              LocaleService.instance.toggleLanguage();
-              setState(() {});
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFCBD5E1)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(LocaleService.instance.languageEmoji, style: const TextStyle(fontSize: 13)),
-                  const SizedBox(width: 3),
-                  Text(
-                    LocaleService.instance.isEnglish ? 'EN' : 'TR',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF334155)),
-                  ),
-                ],
+          Tooltip(
+            message: 'Dil / Language',
+            child: InkWell(
+              onTap: () {
+                LocaleService.instance.toggleLanguage();
+                setState(() {});
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(LocaleService.instance.languageEmoji, style: const TextStyle(fontSize: 13)),
+                    const SizedBox(width: 3),
+                    Text(
+                      LocaleService.instance.isEnglish ? 'EN' : 'TR',
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF334155)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -833,12 +848,16 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w900,
-                            color: color,
+                        Expanded(
+                          child: Text(
+                            title,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              color: color,
+                            ),
                           ),
                         ),
                       ],
@@ -846,6 +865,8 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> with SingleTick
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,

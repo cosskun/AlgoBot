@@ -11,10 +11,32 @@ class OptimalSolution {
   });
 }
 
+class _SearchState {
+  final int x;
+  final int y;
+  final bool hasKey;
+  final int starsMask;
+
+  _SearchState(this.x, this.y, this.hasKey, this.starsMask);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _SearchState &&
+          runtimeType == other.runtimeType &&
+          x == other.x &&
+          y == other.y &&
+          hasKey == other.hasKey &&
+          starsMask == other.starsMask;
+
+  @override
+  int get hashCode => Object.hash(x, y, hasKey, starsMask);
+}
+
 class SolutionSolver {
-  /// Herhangi bir seviye için 3 yıldızlı en optimal komut dizilimini üretir.
+  /// Herhangi bir seviye için 3 yıldızlı en optimal, gerçek ve doğrulanmış komut dizilimini üretir.
   static OptimalSolution solve(LevelData level) {
-    // 1. Yol bulma (Start -> (Keys) -> Goal)
+    // 1. Durum uzayı BFS ile garantili en kısa yıldız + anahtar + hedef rotasını bul
     final points = _findFullPath(level);
     if (points.isEmpty) {
       return OptimalSolution(mainBlocks: [CommandBlock.forward()]);
@@ -23,142 +45,50 @@ class SolutionSolver {
     // 2. Noktalar rotasını temel hareket bloklarına çevir
     final basicBlocks = _convertPointsToCommands(points, level.robotDir);
 
-    // 3. Dünya tipine göre optimizasyon (Döngü ve Fonksiyon sıkıştırması)
-    if (level.worldId == 3) {
-      // Düz döngü dünyası
-      final forwardCount = basicBlocks.where((b) => b.type == CommandType.forward).length;
-      if (forwardCount >= 2 && level.allowedBlocks.contains(CommandType.loopTimes)) {
-        return OptimalSolution(
-          mainBlocks: [
-            CommandBlock.loop(times: forwardCount, children: [CommandBlock.forward()]),
-          ],
-        );
-      }
-    }
-
-    if (level.worldId == 4 && level.allowedBlocks.contains(CommandType.loopTimes)) {
-      // Spiral / Merdiven dünyası
-      return OptimalSolution(
-        mainBlocks: [
-          CommandBlock.loop(
-            times: 3,
-            children: [
-              CommandBlock.forward(),
-              CommandBlock.turnRight(),
-              CommandBlock.forward(),
-              CommandBlock.turnLeft(),
-            ],
-          ),
-        ],
-      );
-    }
-
-    if (level.enableFunctionF1) {
-      // F1 Fonksiyonu dünyası
-      return OptimalSolution(
-        f1Blocks: [CommandBlock.forward(), CommandBlock.forward()],
-        mainBlocks: [
-          CommandBlock.callF1(),
-          CommandBlock.turnRight(),
-          CommandBlock.callF1(),
-          CommandBlock.forward(),
-        ],
-      );
-    }
-
-    // Genel Akıllı Döngü Sıkıştırması (Eğer döngüye izin veriliyorsa)
+    // 3. Döngü sıkıştırması (Loop compression)
+    List<CommandBlock> processedBlocks = basicBlocks;
     if (level.allowedBlocks.contains(CommandType.loopTimes)) {
-      final compressed = _tryCompressWithLoops(basicBlocks);
-      return OptimalSolution(mainBlocks: compressed);
+      processedBlocks = _tryCompressWithLoops(basicBlocks);
     }
 
-    return OptimalSolution(mainBlocks: basicBlocks);
+    // 4. Fonksiyon optimizasyonu (F1 function extraction)
+    if (level.enableFunctionF1 && level.allowedBlocks.contains(CommandType.callF1)) {
+      final f1Result = _tryExtractFunction(processedBlocks);
+      if (f1Result != null) {
+        return f1Result;
+      }
+    }
+
+    return OptimalSolution(mainBlocks: processedBlocks);
   }
 
+  /// State-space BFS: Bulmaca durum uzayında (pos, hasKey, starsMask) garantili tam çözüm
   static List<GridPoint> _findFullPath(LevelData level) {
-    var currentPoint = level.robotStart;
-    final remainingStars = List<GridPoint>.from(level.stars);
-    final fullPath = <GridPoint>[level.robotStart];
-    var doors = List<GridPoint>.from(level.doors);
+    final start = level.robotStart;
+    final goal = level.goal;
+    final stars = level.stars;
+    final obstacles = level.obstacles;
+    final doors = level.doors;
+    final keys = level.keys;
 
-    // 1. Visit each star using greedy nearest BFS path
-    while (remainingStars.isNotEmpty) {
-      List<GridPoint>? bestPath;
-      GridPoint? bestStar;
+    final allStarsMask = (1 << stars.length) - 1;
 
-      for (final star in remainingStars) {
-        final path = _bfs(currentPoint, star, level.cols, level.rows, level.obstacles, doors);
-        if (path.isNotEmpty) {
-          if (bestPath == null || path.length < bestPath.length) {
-            bestPath = path;
-            bestStar = star;
-          }
-        }
-      }
+    final queue = <_SearchState>[];
+    final cameFrom = <_SearchState, _SearchState?>{};
 
-      if (bestPath != null && bestStar != null) {
-        fullPath.addAll(bestPath.sublist(1));
-        currentPoint = bestStar;
-        remainingStars.remove(bestStar);
-      } else {
-        break;
-      }
+    final initialKey = keys.isEmpty;
+    int initialStarsMask = 0;
+    for (int i = 0; i < stars.length; i++) {
+      if (stars[i] == start) initialStarsMask |= (1 << i);
     }
 
-    // 2. Visit keys if any
-    if (level.keys.isNotEmpty && doors.isNotEmpty) {
-      for (final key in level.keys) {
-        final keyPath = _bfs(currentPoint, key, level.cols, level.rows, level.obstacles, doors);
-        if (keyPath.isNotEmpty) {
-          fullPath.addAll(keyPath.sublist(1));
-          currentPoint = key;
-          doors = []; // Doors unlocked
-        }
-      }
-    }
+    final startState = _SearchState(start.x, start.y, initialKey || keys.contains(start), initialStarsMask);
+    queue.add(startState);
+    cameFrom[startState] = null;
 
-    // 3. Visit goal
-    final goalPath = _bfs(currentPoint, level.goal, level.cols, level.rows, level.obstacles, doors);
-    if (goalPath.isNotEmpty) {
-      fullPath.addAll(goalPath.sublist(1));
-      return fullPath;
-    }
-
-    // Fallback: Direct BFS from start to goal
-    final direct = _bfs(level.robotStart, level.goal, level.cols, level.rows, level.obstacles, level.doors);
-    if (direct.isNotEmpty) return direct;
-
-    // Fallback: Simple coordinate path
-    final List<GridPoint> fallback = [level.robotStart];
-    int cx = level.robotStart.x;
-    int cy = level.robotStart.y;
-    while (cx != level.goal.x || cy != level.goal.y) {
-      if (cx < level.goal.x) {
-        cx++;
-      } else if (cx > level.goal.x) {
-        cx--;
-      } else if (cy < level.goal.y) {
-        cy++;
-      } else if (cy > level.goal.y) {
-        cy--;
-      }
-      fallback.add(GridPoint(cx, cy));
-    }
-    return fallback;
-  }
-
-  static List<GridPoint> _bfs(
-    GridPoint start,
-    GridPoint target,
-    int cols,
-    int rows,
-    List<GridPoint> obstacles,
-    List<GridPoint> lockedDoors,
-  ) {
-    final queue = <List<GridPoint>>[
-      [start]
-    ];
-    final visited = <GridPoint>{start};
+    _SearchState? endState;
+    _SearchState? bestFallbackState;
+    int maxStarsInFallback = -1;
 
     final deltas = [
       const GridPoint(0, -1),
@@ -168,25 +98,78 @@ class SolutionSolver {
     ];
 
     while (queue.isNotEmpty) {
-      final path = queue.removeAt(0);
-      final current = path.last;
+      final curr = queue.removeAt(0);
 
-      if (current == target) return path;
+      // Hedefe ulaşıldı ve tüm yıldızlar toplandı!
+      if (curr.x == goal.x && curr.y == goal.y && curr.starsMask == allStarsMask) {
+        endState = curr;
+        break;
+      }
+
+      // En iyi fallback state (tüm yıldızlar toplanmasa bile hedefe ulaşılan durum)
+      if (curr.x == goal.x && curr.y == goal.y) {
+        int starsCount = 0;
+        for (int i = 0; i < stars.length; i++) {
+          if ((curr.starsMask & (1 << i)) != 0) starsCount++;
+        }
+        if (starsCount > maxStarsInFallback) {
+          maxStarsInFallback = starsCount;
+          bestFallbackState = curr;
+        }
+      }
 
       for (final d in deltas) {
-        final next = GridPoint(current.x + d.x, current.y + d.y);
-        if (next.x < 0 || next.x >= cols || next.y < 0 || next.y >= rows) continue;
-        if (obstacles.contains(next)) continue;
-        if (lockedDoors.contains(next)) continue;
-        if (visited.contains(next)) continue;
+        final nx = curr.x + d.x;
+        final ny = curr.y + d.y;
+        final nextPos = GridPoint(nx, ny);
 
-        visited.add(next);
-        queue.add([...path, next]);
+        // Grid sınırları kontrolü
+        if (nx < 0 || nx >= level.cols || ny < 0 || ny >= level.rows) continue;
+
+        // Engel kontrolü
+        if (obstacles.contains(nextPos)) continue;
+
+        // Kilitli kapı ve anahtar kontrolü
+        if (doors.contains(nextPos) && !curr.hasKey) continue;
+
+        // Yıldızların tamamı toplanmadan erken bayrağa basılması oyunu erken bitirir
+        if (nextPos == goal) {
+          int nextStars = curr.starsMask;
+          for (int i = 0; i < stars.length; i++) {
+            if (stars[i] == nextPos) nextStars |= (1 << i);
+          }
+          if (nextStars != allStarsMask) {
+            continue;
+          }
+        }
+
+        final nextHasKey = curr.hasKey || keys.contains(nextPos);
+        int nextStars = curr.starsMask;
+        for (int i = 0; i < stars.length; i++) {
+          if (stars[i] == nextPos) nextStars |= (1 << i);
+        }
+
+        final nextState = _SearchState(nx, ny, nextHasKey, nextStars);
+        if (!cameFrom.containsKey(nextState)) {
+          cameFrom[nextState] = curr;
+          queue.add(nextState);
+        }
       }
     }
-    return [];
+
+    final targetState = endState ?? bestFallbackState;
+    if (targetState == null) return [start, goal];
+
+    final path = <GridPoint>[];
+    _SearchState? curr = targetState;
+    while (curr != null) {
+      path.add(GridPoint(curr.x, curr.y));
+      curr = cameFrom[curr];
+    }
+    return path.reversed.toList();
   }
 
+  /// Koordinat dizisini yön dönüşleri ve ileri komutlarına dönüştürür
   static List<CommandBlock> _convertPointsToCommands(List<GridPoint> points, int initialDir) {
     final List<CommandBlock> blocks = [];
     int curDir = initialDir;
@@ -206,7 +189,6 @@ class SolutionSolver {
         targetDir = 0; // Yukarı
       }
 
-      // Dönüşleri ekle
       while (curDir != targetDir) {
         final diff = (targetDir - curDir) % 4;
         if (diff == 1 || diff == -3) {
@@ -218,38 +200,103 @@ class SolutionSolver {
         }
       }
 
-      // İleri adım ekle
       blocks.add(CommandBlock.forward());
     }
 
     return blocks;
   }
 
+  /// Akıllı döngü sıkıştırması: Tekrarlayan komut blok dizilerini loop bloğuna dönüştürür
   static List<CommandBlock> _tryCompressWithLoops(List<CommandBlock> blocks) {
-    if (blocks.length < 3) return blocks;
+    if (blocks.length < 2) return blocks;
 
-    // Arka arkaya 3+ İleri Git varsa döngüye çevir
-    final List<CommandBlock> result = [];
-    int i = 0;
-    while (i < blocks.length) {
-      if (blocks[i].type == CommandType.forward) {
-        int count = 0;
-        while (i < blocks.length && blocks[i].type == CommandType.forward) {
-          count++;
-          i++;
-        }
-        if (count >= 3) {
-          result.add(CommandBlock.loop(times: count, children: [CommandBlock.forward()]));
-        } else {
-          for (int k = 0; k < count; k++) {
-            result.add(CommandBlock.forward());
+    for (int patternLen = 4; patternLen >= 1; patternLen--) {
+      for (int i = 0; i <= blocks.length - (patternLen * 2); i++) {
+        final pattern = blocks.sublist(i, i + patternLen);
+        if (pattern.any((b) => b.type == CommandType.loopTimes)) continue;
+
+        int repeats = 1;
+        while (i + (repeats + 1) * patternLen <= blocks.length && repeats < 5) {
+          bool matches = true;
+          for (int k = 0; k < patternLen; k++) {
+            if (blocks[i + repeats * patternLen + k].type != pattern[k].type) {
+              matches = false;
+              break;
+            }
+          }
+          if (matches) {
+            repeats++;
+          } else {
+            break;
           }
         }
-      } else {
-        result.add(blocks[i]);
-        i++;
+
+        if (repeats >= 2) {
+          final compressed = <CommandBlock>[];
+          compressed.addAll(blocks.sublist(0, i));
+          compressed.add(CommandBlock.loop(
+            times: repeats,
+            children: pattern.map((b) => b.clone()).toList(),
+          ));
+          compressed.addAll(blocks.sublist(i + repeats * patternLen));
+          return _tryCompressWithLoops(compressed);
+        }
       }
     }
-    return result;
+
+    return blocks;
+  }
+
+  /// Tekrarlayan kod kalıplarını F1 fonksiyonuna çıkarır
+  static OptimalSolution? _tryExtractFunction(List<CommandBlock> blocks) {
+    if (blocks.length < 4) return null;
+
+    OptimalSolution? bestSolution;
+    int bestTotalLength = blocks.length;
+
+    for (int patternLen = 4; patternLen >= 2; patternLen--) {
+      for (int i = 0; i <= blocks.length - patternLen; i++) {
+        final candidate = blocks.sublist(i, i + patternLen);
+        if (candidate.any((b) => b.type == CommandType.callF1)) continue;
+
+        // Aday kalıbın kaç kez tekrar ettiğini ve F1 yapıldığında ne kadar kazandırdığını hesapla
+        final replaced = <CommandBlock>[];
+        int count = 0;
+        int idx = 0;
+
+        while (idx < blocks.length) {
+          if (idx + patternLen <= blocks.length) {
+            bool matches = true;
+            for (int k = 0; k < patternLen; k++) {
+              if (blocks[idx + k].type != candidate[k].type) {
+                matches = false;
+                break;
+              }
+            }
+            if (matches) {
+              replaced.add(CommandBlock.callF1());
+              idx += patternLen;
+              count++;
+              continue;
+            }
+          }
+          replaced.add(blocks[idx]);
+          idx++;
+        }
+
+        if (count >= 2) {
+          final totalLen = candidate.length + replaced.length;
+          if (totalLen < bestTotalLength) {
+            bestTotalLength = totalLen;
+            bestSolution = OptimalSolution(
+              f1Blocks: candidate.map((b) => b.clone()).toList(),
+              mainBlocks: replaced,
+            );
+          }
+        }
+      }
+    }
+
+    return bestSolution;
   }
 }

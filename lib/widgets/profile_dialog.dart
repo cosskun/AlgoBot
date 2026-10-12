@@ -45,35 +45,43 @@ class ProfileDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: currentAvatar.primaryColor.withAlpha(40),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: currentAvatar.primaryColor, width: 2),
-                        ),
-                        child: Center(
-                          child: Text(currentAvatar.emoji, style: const TextStyle(fontSize: 26)),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentAvatar.name,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF1E293B)),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: currentAvatar.primaryColor.withAlpha(40),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: currentAvatar.primaryColor, width: 2),
                           ),
-                          const Text(
-                            'Gelişim Raporu & Profil',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
+                          child: Center(
+                            child: Text(currentAvatar.emoji, style: const TextStyle(fontSize: 26)),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                currentAvatar.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF1E293B)),
+                              ),
+                              const Text(
+                                'Gelişim Raporu & Profil',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.grey),
@@ -206,10 +214,15 @@ class ProfileDialog extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF334155)),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF334155)),
+                ),
               ),
+              const SizedBox(width: 6),
               Text(
                 '%$percentInt',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: color),

@@ -39,7 +39,7 @@ class StorageService {
   }
 
   File? _getFallbackDesktopFile() {
-    if (kIsWeb) return null;
+    if (kIsWeb || Platform.environment.containsKey('FLUTTER_TEST')) return null;
     try {
       final home = Platform.environment['USERPROFILE'] ?? Platform.environment['HOME'];
       if (home == null || home.isEmpty) return null;

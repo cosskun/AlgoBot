@@ -584,16 +584,21 @@ class _SandboxLevelBuilderScreenState extends State<SandboxLevelBuilderScreen> w
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _isPlaying
-                        ? (isEn ? '🎮 PLAY & TEST MODE' : '🎮 OYUN & TEST MODU')
-                        : (isEn ? '🎨 DRAW MODE: Tap grid cells' : '🎨 ÇİZİM MODU: Karelere dokun'),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: _isPlaying ? const Color(0xFF06D6A0) : const Color(0xFF4361EE),
+                  Expanded(
+                    child: Text(
+                      _isPlaying
+                          ? (isEn ? '🎮 PLAY & TEST MODE' : '🎮 OYUN & TEST MODU')
+                          : (isEn ? '🎨 DRAW MODE: Tap grid cells' : '🎨 ÇİZİM MODU: Karelere dokun'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: _isPlaying ? const Color(0xFF06D6A0) : const Color(0xFF4361EE),
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Row(
                     children: [
                       ElevatedButton(

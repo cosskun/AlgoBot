@@ -27,19 +27,25 @@ class AvatarSelectorDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Text('👗', style: TextStyle(fontSize: 26)),
-                    SizedBox(width: 8),
-                    Text(
-                      'Robi Kostüm Dolabı',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFF2B2D42),
+                const Expanded(
+                  child: Row(
+                    children: [
+                      Text('👗', style: TextStyle(fontSize: 26)),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Robi Kostüm Dolabı',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF2B2D42),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.grey),

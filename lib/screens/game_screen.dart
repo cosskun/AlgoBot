@@ -639,12 +639,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     final isEn = LocaleService.instance.isEnglish;
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1105,20 +1106,32 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             if (_currentLevel.enableFunctionF1 && _currentAgeMode == AgeMode.master)
-                              Row(
-                                children: [
-                                  ChoiceChip(
-                                    label: Text(LocaleService.instance.isEnglish ? '🚀 Main Code' : '🚀 Ana Kod'),
-                                    selected: _activeTab == 'main',
-                                    onSelected: (val) => setState(() => _activeTab = 'main'),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      ChoiceChip(
+                                        visualDensity: VisualDensity.compact,
+                                        labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                        label: Text(
+                                          LocaleService.instance.isEnglish ? '🚀 Main' : '🚀 Ana Kod',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                        selected: _activeTab == 'main',
+                                        onSelected: (val) => setState(() => _activeTab = 'main'),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      ChoiceChip(
+                                        visualDensity: VisualDensity.compact,
+                                        labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                        label: const Text('✨ F1', style: TextStyle(fontSize: 12)),
+                                        selected: _activeTab == 'f1',
+                                        onSelected: (val) => setState(() => _activeTab = 'f1'),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 6),
-                                  ChoiceChip(
-                                    label: const Text('✨ F1'),
-                                    selected: _activeTab == 'f1',
-                                    onSelected: (val) => setState(() => _activeTab = 'f1'),
-                                  ),
-                                ],
+                                ),
                               )
                             else
                               Text(
@@ -1126,6 +1139,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Color(0xFF475569)),
                               ),
                             TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                visualDensity: VisualDensity.compact,
+                              ),
                               onPressed: () {
                                 SoundService.instance.playBlockSnap();
                                 setState(() {
@@ -1136,7 +1153,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   }
                                 });
                               },
-                              child: Text('${LocaleService.instance.tr('clear')} 🗑️', style: const TextStyle(color: Colors.red, fontSize: 12)),
+                              child: Text('${LocaleService.instance.tr('clear')} 🗑️', style: const TextStyle(color: Colors.red, fontSize: 11)),
                             ),
                           ],
                         ),

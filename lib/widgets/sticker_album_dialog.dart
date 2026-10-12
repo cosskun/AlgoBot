@@ -25,32 +25,38 @@ class StickerAlbumDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Text('🏆', style: TextStyle(fontSize: 26)),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Çıkartma Albümü',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF2B2D42),
-                          ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Text('🏆', style: TextStyle(fontSize: 26)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Çıkartma Albümü',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF2B2D42),
+                              ),
+                            ),
+                            Text(
+                              '$unlockedCount / ${StickerModel.allStickers.length} Toplandı',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF64748B),
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '$unlockedCount / ${StickerModel.allStickers.length} Toplandı',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.grey),

@@ -364,12 +364,12 @@ class LevelData {
         robotStart: GridPoint(0, 1), robotDir: 1,
         goal: GridPoint(5, 4),
         obstacles: [
-          GridPoint(2, 0), GridPoint(2, 1), GridPoint(2, 2),
-          GridPoint(3, 3), GridPoint(3, 4), GridPoint(3, 5)
-        ], // S kanyonu bariyerleri!
+          GridPoint(2, 0), GridPoint(2, 1),
+          GridPoint(3, 4), GridPoint(3, 5)
+        ], // S kanyonu bariyerleri (geçiş açık)!
         stars: [GridPoint(1, 3), GridPoint(4, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight],
-        maxBlocksFor3Stars: 11,
+        maxBlocksFor3Stars: 16,
       ),
       const LevelData(
         id: 14,
@@ -477,13 +477,13 @@ class LevelData {
         robotStart: GridPoint(0, 0), robotDir: 1,
         goal: GridPoint(5, 5),
         obstacles: [
-          GridPoint(2, 0), GridPoint(2, 1), GridPoint(2, 2),
-          GridPoint(3, 3), GridPoint(3, 4), GridPoint(3, 5),
+          GridPoint(2, 0), GridPoint(2, 1),
+          GridPoint(3, 4), GridPoint(3, 5),
           GridPoint(0, 4), GridPoint(5, 1)
         ],
         stars: [GridPoint(4, 0), GridPoint(1, 5), GridPoint(5, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight],
-        maxBlocksFor3Stars: 15,
+        maxBlocksFor3Stars: 30,
         rewardAvatarId: 'climber_robi',
       ),
     ];
@@ -579,7 +579,7 @@ class LevelData {
         obstacles: [GridPoint(1, 1), GridPoint(1, 2), GridPoint(1, 3), GridPoint(3, 2)],
         stars: [GridPoint(4, 0), GridPoint(4, 4), GridPoint(0, 4)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 6,
+        maxBlocksFor3Stars: 8,
       ),
       const LevelData(
         id: 27,
@@ -607,7 +607,7 @@ class LevelData {
         obstacles: [GridPoint(1, 1), GridPoint(3, 1), GridPoint(1, 3), GridPoint(3, 3)],
         stars: [GridPoint(2, 0), GridPoint(4, 2), GridPoint(2, 4), GridPoint(0, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 5,
+        maxBlocksFor3Stars: 7,
       ),
       const LevelData(
         id: 29,
@@ -659,7 +659,7 @@ class LevelData {
         obstacles: [GridPoint(1, 1), GridPoint(2, 1), GridPoint(3, 1), GridPoint(4, 1)],
         stars: [GridPoint(5, 0), GridPoint(5, 5), GridPoint(0, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 7,
+        maxBlocksFor3Stars: 10,
       ),
       const LevelData(
         id: 32,
@@ -701,7 +701,7 @@ class LevelData {
         obstacles: [GridPoint(3, 2), GridPoint(3, 3), GridPoint(2, 3)],
         stars: [GridPoint(5, 3), GridPoint(3, 5), GridPoint(0, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 6,
+        maxBlocksFor3Stars: 13,
       ),
       const LevelData(
         id: 35,
@@ -712,10 +712,10 @@ class LevelData {
         cols: 6, rows: 6,
         robotStart: GridPoint(2, 2), robotDir: 1,
         goal: GridPoint(2, 2),
-        obstacles: [GridPoint(1, 1), GridPoint(4, 4)],
+        obstacles: [GridPoint(3, 1), GridPoint(1, 3)],
         stars: [GridPoint(4, 1), GridPoint(1, 4), GridPoint(4, 4)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 10,
       ),
       const LevelData(
         id: 36,
@@ -743,7 +743,7 @@ class LevelData {
         obstacles: [GridPoint(2, 1), GridPoint(3, 1), GridPoint(3, 2), GridPoint(1, 3)],
         stars: [GridPoint(5, 0), GridPoint(5, 5), GridPoint(1, 4)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 11,
       ),
       const LevelData(
         id: 38,
@@ -771,7 +771,7 @@ class LevelData {
         obstacles: [GridPoint(2, 3), GridPoint(3, 3)],
         stars: [GridPoint(1, 1), GridPoint(4, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 11,
       ),
       const LevelData(
         id: 40,
@@ -785,7 +785,7 @@ class LevelData {
         obstacles: [GridPoint(2, 2), GridPoint(1, 4), GridPoint(4, 3)],
         stars: [GridPoint(5, 0), GridPoint(5, 5), GridPoint(0, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes],
-        maxBlocksFor3Stars: 7,
+        maxBlocksFor3Stars: 14,
         rewardAvatarId: 'magic_robi',
       ),
     ];
@@ -1153,7 +1153,7 @@ class LevelData {
         stars: [GridPoint(2, 0), GridPoint(4, 2), GridPoint(2, 4), GridPoint(0, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 15,
       ),
       const LevelData(
         id: 64,
@@ -1164,7 +1164,7 @@ class LevelData {
         cols: 5, rows: 5,
         robotStart: GridPoint(1, 1), robotDir: 1,
         goal: GridPoint(1, 1),
-        obstacles: [GridPoint(2, 2), GridPoint(2, 3), GridPoint(3, 2), GridPoint(3, 3)],
+        obstacles: [GridPoint(2, 2)],
         stars: [GridPoint(3, 1), GridPoint(3, 3), GridPoint(1, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
@@ -1179,7 +1179,7 @@ class LevelData {
         cols: 6, rows: 5,
         robotStart: GridPoint(0, 1), robotDir: 1,
         goal: GridPoint(4, 3),
-        obstacles: [GridPoint(1, 1), GridPoint(2, 2), GridPoint(3, 3)],
+        obstacles: [GridPoint(0, 2), GridPoint(2, 1), GridPoint(1, 3), GridPoint(3, 2)],
         stars: [GridPoint(1, 2), GridPoint(3, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
@@ -1198,7 +1198,7 @@ class LevelData {
         stars: [GridPoint(1, 1), GridPoint(3, 4)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 12,
       ),
       const LevelData(
         id: 67,
@@ -1213,7 +1213,7 @@ class LevelData {
         stars: [GridPoint(3, 0), GridPoint(3, 3), GridPoint(5, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.turnLeft, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 12,
       ),
       const LevelData(
         id: 68,
@@ -1228,7 +1228,7 @@ class LevelData {
         stars: [GridPoint(1, 2), GridPoint(3, 4), GridPoint(5, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 17,
       ),
       const LevelData(
         id: 69,
@@ -1245,7 +1245,7 @@ class LevelData {
         stars: [GridPoint(2, 3), GridPoint(5, 1)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 14,
       ),
       const LevelData(
         id: 70,
@@ -1260,7 +1260,7 @@ class LevelData {
         stars: [GridPoint(4, 0), GridPoint(1, 4), GridPoint(5, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.turnLeft, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 22,
       ),
     ];
   }
@@ -1297,7 +1297,7 @@ class LevelData {
         keys: [GridPoint(4, 1), GridPoint(4, 4)],
         doors: [GridPoint(2, 4)],
         obstacles: [GridPoint(2, 2), GridPoint(3, 2), GridPoint(2, 3), GridPoint(3, 3)],
-        stars: [GridPoint(3, 2)],
+        stars: [GridPoint(4, 2)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.loopTimes, CommandType.callF1],
         enableFunctionF1: true,
         maxBlocksFor3Stars: 8,
@@ -1330,7 +1330,7 @@ class LevelData {
         stars: [GridPoint(5, 0), GridPoint(0, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 13,
       ),
       const LevelData(
         id: 75,
@@ -1345,7 +1345,7 @@ class LevelData {
         stars: [GridPoint(1, 1), GridPoint(3, 5), GridPoint(5, 1)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 13,
       ),
       const LevelData(
         id: 76,
@@ -1424,7 +1424,7 @@ class LevelData {
         stars: [GridPoint(2, 0), GridPoint(5, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 8,
+        maxBlocksFor3Stars: 13,
       ),
     ];
   }
@@ -1624,7 +1624,7 @@ class LevelData {
           CommandBlock(id: 'd3', type: CommandType.turnRight),
           CommandBlock(id: 'd4', type: CommandType.forward),
         ],
-        maxBlocksFor3Stars: 10,
+        maxBlocksFor3Stars: 14,
       ),
     ];
   }
@@ -1660,7 +1660,7 @@ class LevelData {
         obstacles: [GridPoint(1, 1), GridPoint(1, 2), GridPoint(4, 3), GridPoint(4, 4)],
         stars: [GridPoint(0, 0), GridPoint(5, 0), GridPoint(5, 5)],
         allowedBlocks: [CommandType.forward, CommandType.turnRight, CommandType.turnLeft, CommandType.loopTimes],
-        maxBlocksFor3Stars: 12,
+        maxBlocksFor3Stars: 14,
       ),
       const LevelData(
         id: 93,
@@ -1782,7 +1782,7 @@ class LevelData {
         stars: [GridPoint(2, 0), GridPoint(3, 5), GridPoint(5, 3)],
         allowedBlocks: [CommandType.forward, CommandType.turnLeft, CommandType.turnRight, CommandType.loopTimes, CommandType.ifObstacle, CommandType.callF1],
         enableFunctionF1: true,
-        maxBlocksFor3Stars: 10,
+        maxBlocksFor3Stars: 14,
         rewardAvatarId: 'ninja_robi',
       ),
     ];
